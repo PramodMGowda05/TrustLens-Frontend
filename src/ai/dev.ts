@@ -1,1 +1,5 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/generate-real-time-trust-score.ts';
+import '@/ai/flows/display-predicted-review-label.ts';
