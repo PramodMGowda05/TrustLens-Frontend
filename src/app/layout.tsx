@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'TrustView',
+  title: 'TrustLens',
   description: 'Fake Review Detection Analytics Platform',
 };
 

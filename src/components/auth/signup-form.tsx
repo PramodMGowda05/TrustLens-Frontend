@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Bot, Eye, EyeOff } from "lucide-react"
+import { Camera, Eye, EyeOff } from "lucide-react"
 import React from "react"
 import { toast } from "@/hooks/use-toast"
 
@@ -52,11 +52,11 @@ export function SignupForm() {
     <div className="flex h-full flex-col justify-center">
       <div className="mb-8 text-center">
         <div className="mb-4 flex items-center justify-center gap-2 text-2xl font-bold font-headline text-primary md:hidden">
-            <Bot size={32} />
-            TrustView
+            <Camera size={32} />
+            TrustLens
         </div>
         <h1 className="text-3xl font-bold font-headline">Create an Account</h1>
-        <p className="text-muted-foreground">Start your journey with TrustView today</p>
+        <p className="text-muted-foreground">Start your journey with TrustLens today</p>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

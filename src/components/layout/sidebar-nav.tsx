@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, LayoutDashboard, BarChart3, Shield, UserCog, Package } from "lucide-react";
+import { Camera, LayoutDashboard, BarChart3, Shield } from "lucide-react";
 import { Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import React from 'react';
@@ -28,9 +28,9 @@ export function SidebarNav({ isAdmin = false }: { isAdmin?: boolean }) {
             <SidebarHeader>
                 <Link href="/dashboard" className="flex items-center gap-2 text-xl font-bold font-headline text-primary">
                     <div className="rounded-lg bg-primary p-2 text-primary-foreground">
-                        <Bot className="h-6 w-6" />
+                        <Camera className="h-6 w-6" />
                     </div>
-                    <span className="group-data-[collapsible=icon]:hidden">TrustView</span>
+                    <span className="group-data-[collapsible=icon]:hidden">TrustLens</span>
                 </Link>
             </SidebarHeader>
             <SidebarContent>

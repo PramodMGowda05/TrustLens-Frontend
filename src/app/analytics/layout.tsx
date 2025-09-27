@@ -1,7 +1,7 @@
 import AppLayout from '@/components/layout/app-layout';
 
 export const metadata = {
-  title: 'Analytics | TrustView',
+  title: 'Analytics | TrustLens',
 };
 
 export default AppLayout;
