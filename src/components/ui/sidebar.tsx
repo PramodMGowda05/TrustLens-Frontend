@@ -194,7 +194,7 @@ type SidebarMenuButtonProps = ButtonProps & {
 const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   SidebarMenuButtonProps
->(({ asChild, tooltip, ...props }, ref) => {
+>(({ asChild, tooltip, isActive, ...props }, ref) => {
   const { open } = useSidebar()
 
   const button = (
