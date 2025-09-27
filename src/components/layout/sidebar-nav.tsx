@@ -38,7 +38,7 @@ export function SidebarNav({ isAdmin = false }: { isAdmin?: boolean }) {
                     {navItems.map((item) => (
                         (!item.adminOnly || isAdmin) && (
                             <SidebarMenuItem key={item.href}>
-                                <Link href={item.href} passHref legacyBehavior>
+                                <Link href={item.href} passHref>
                                     <SidebarMenuButton
                                         asChild
                                         isActive={pathname === item.href}
