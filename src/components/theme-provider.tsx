@@ -30,14 +30,22 @@ export function ThemeProvider({
   enableSystem = true,
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = React.useState(defaultTheme)
+  const [theme, setTheme] = React.useState(() => {
+    if (typeof window === 'undefined') {
+      return defaultTheme;
+    }
+    return localStorage.getItem(storageKey) || defaultTheme
+  })
+  
+  const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
-    const storedTheme = localStorage.getItem(storageKey) || defaultTheme;
-    setTheme(storedTheme);
-  }, [storageKey, defaultTheme]);
+    setMounted(true)
+  }, [])
+  
 
   React.useEffect(() => {
+    if (!mounted) return;
     const root = window.document.documentElement
 
     root.classList.remove("light", "dark")
@@ -49,7 +57,7 @@ export function ThemeProvider({
     }
 
     root.classList.add(systemTheme)
-  }, [theme, enableSystem])
+  }, [theme, enableSystem, mounted])
 
   const value = {
     theme,
@@ -59,6 +67,10 @@ export function ThemeProvider({
       }
       setTheme(theme)
     },
+  }
+
+  if (!mounted) {
+    return null;
   }
 
   return (
