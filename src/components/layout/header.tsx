@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PanelLeft, CircleUser, LogOut } from "lucide-react";
+import { PanelLeft, CircleUser, LogOut, User, Settings, LifeBuoy } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
 import Link from 'next/link';
@@ -46,8 +46,24 @@ export function Header() {
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Settings</DropdownMenuItem>
-                        <DropdownMenuItem>Support</DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                           <Link href="/profile" className="flex items-center">
+                                <User className="mr-2 h-4 w-4" />
+                                Profile
+                            </Link>
+                        </DropdownMenuItem>
+                         <DropdownMenuItem asChild>
+                           <Link href="/profile" className="flex items-center">
+                                <Settings className="mr-2 h-4 w-4" />
+                                Settings
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                           <Link href="/profile" className="flex items-center">
+                                <LifeBuoy className="mr-2 h-4 w-4" />
+                                Support
+                            </Link>
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                             <Link href="/login" className="flex items-center">
