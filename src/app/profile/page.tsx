@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, Settings, LifeBuoy } from "lucide-react";
 import { MyAccountTab } from "@/components/profile/my-account-tab";
+import { SettingsTab } from "@/components/profile/settings-tab";
+import { SupportTab } from "@/components/profile/support-tab";
 
 export default function ProfilePage() {
     return (
@@ -30,26 +32,10 @@ export default function ProfilePage() {
                     <MyAccountTab />
                 </TabsContent>
                 <TabsContent value="settings">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Settings</CardTitle>
-                            <CardDescription>Application settings and preferences.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <p>Settings content goes here.</p>
-                        </CardContent>
-                    </Card>
+                    <SettingsTab />
                 </TabsContent>
                 <TabsContent value="support">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Support</CardTitle>
-                            <CardDescription>Get help and support.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <p>Support content goes here.</p>
-                        </CardContent>
-                    </Card>
+                    <SupportTab />
                 </TabsContent>
             </Tabs>
         </div>
