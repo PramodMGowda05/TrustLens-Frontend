@@ -38,25 +38,23 @@ export function SidebarNav({ isAdmin = false }: { isAdmin?: boolean }) {
                     {navItems.map((item) => (
                         (!item.adminOnly || isAdmin) && (
                             <SidebarMenuItem key={item.href}>
-                                <Link href={item.href} passHref>
-                                    <SidebarMenuButton
-                                        asChild
-                                        isActive={pathname === item.href}
-                                        tooltip={{
-                                            children: item.label,
-                                            className: "bg-primary text-primary-foreground",
-                                        }}
-                                        className={cn(
-                                            "justify-start",
-                                            pathname === item.href && "bg-primary/10 text-primary hover:bg-primary/20"
-                                        )}
-                                    >
-                                        <a>
-                                            <item.icon className="h-5 w-5" />
-                                            <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                                        </a>
-                                    </SidebarMenuButton>
-                                </Link>
+                                <SidebarMenuButton
+                                    asChild
+                                    isActive={pathname === item.href}
+                                    tooltip={{
+                                        children: item.label,
+                                        className: "bg-primary text-primary-foreground",
+                                    }}
+                                    className={cn(
+                                        "justify-start",
+                                        pathname === item.href && "bg-primary/10 text-primary hover:bg-primary/20"
+                                    )}
+                                >
+                                    <Link href={item.href}>
+                                        <item.icon className="h-5 w-5" />
+                                        <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+                                    </Link>
+                                </SidebarMenuButton>
                             </SidebarMenuItem>
                         )
                     ))}
