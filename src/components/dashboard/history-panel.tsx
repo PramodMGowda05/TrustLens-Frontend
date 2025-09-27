@@ -46,7 +46,7 @@ export function HistoryPanel({ history, onSelect, isAnalyzing }: HistoryPanelPro
                 <div className="flex justify-between items-start">
                     <div className="flex-1 truncate pr-4">
                         <p className="font-semibold truncate">{item.productOrService}</p>
-                        <p className="text-sm text-muted-foreground">{item.platform.charAt(0).toUpperCase() + item.slice(1)}</p>
+                        <p className="text-sm text-muted-foreground">{item.platform.charAt(0).toUpperCase() + item.platform.slice(1)}</p>
                     </div>
                     <div className="flex-shrink-0 text-right">
                         <Badge variant={item.predictedLabel === 'genuine' ? 'default' : 'destructive'} className={cn(
