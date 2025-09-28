@@ -6,7 +6,10 @@ import { ResultDisplay } from '@/components/dashboard/result-display';
 import { HistoryPanel } from '@/components/dashboard/history-panel';
 import type { HistoryItem } from '@/lib/types';
 import { mockHistory } from '@/lib/mock-data';
+import { analyzeReview } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
+import type { GenerateRealTimeTrustScoreInput } from '@/ai/flows/generate-real-time-trust-score';
+
 
 export default function DashboardPage() {
   const [analysisResult, setAnalysisResult] = useState<HistoryItem | null>(null);

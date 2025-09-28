@@ -21,7 +21,7 @@ export type GenerateRealTimeTrustScoreInput = z.infer<typeof GenerateRealTimeTru
 const GenerateRealTimeTrustScoreOutputSchema = z.object({
   trustScore: z.number().describe('A score between 0 and 1 indicating the trustworthiness of the review, where 0 is least trustworthy and 1 is most trustworthy.'),
   predictedLabel: z.enum(['genuine', 'fake']).describe('The predicted label for the review (genuine or fake).'),
-  explanation: z.string().optional().describe('An explanation of why the review was classified as genuine or fake.'),
+  explanation: z.string().describe('An explanation of why the review was classified as genuine or fake.'),
 });
 export type GenerateRealTimeTrustScoreOutput = z.infer<typeof GenerateRealTimeTrustScoreOutputSchema>;
 
@@ -40,11 +40,7 @@ Product/Service: {{{productOrService}}}
 Platform: {{{platform}}}
 Language: {{{language}}}
 
-Based on your analysis, provide a trust score between 0 and 1 (0 being least trustworthy, 1 being most trustworthy), predict whether the review is genuine or fake, and provide a brief explanation for your classification.
-
-Ensure that the trustScore is a number between 0 and 1. Ensure predictedLabel is either "genuine" or "fake". The explanation should briefly describe the reasoning behind the classification.
-
-Output should be formatted as JSON.`,
+Based on your analysis, provide a trust score between 0 and 1 (0 being least trustworthy, 1 being most trustworthy), predict whether the review is genuine or fake, and provide a brief explanation for your classification.`,
 });
 
 const generateRealTimeTrustScoreFlow = ai.defineFlow(

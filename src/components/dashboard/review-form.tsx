@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wand2, Loader2 } from "lucide-react";
-import { analyzeReview } from "@/app/actions";
+import { generateRealTimeTrustScore } from "@/ai/flows/generate-real-time-trust-score";
 import { useToast } from "@/hooks/use-toast";
 import type { HistoryItem } from '@/lib/types';
 
@@ -41,23 +41,25 @@ export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsAnalyzing(true);
-        const result = await analyzeReview(values);
-        setIsAnalyzing(false);
-
-        if (result.success && result.data) {
+        try {
+            const result = await generateRealTimeTrustScore(values);
             const newHistoryItem: HistoryItem = {
               id: new Date().toISOString(),
+              timestamp: new Date().toISOString(),
               ...values,
-              ...result.data
+              ...result
             }
             onAnalysisComplete(newHistoryItem);
             form.reset();
-        } else {
+        } catch (error) {
+            console.error("Analysis failed:", error);
             toast({
                 variant: 'destructive',
                 title: 'Analysis Failed',
-                description: result.error || 'An unknown error occurred.',
+                description: 'An unexpected error occurred. Please try again.',
             });
+        } finally {
+            setIsAnalyzing(false);
         }
     }
 
