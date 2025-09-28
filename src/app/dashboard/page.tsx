@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const handleAnalysisComplete = (result: HistoryItem) => {
     if (result) {
       setAnalysisResult(result);
+      // Prepend the new result to the history
       setHistory(prev => [result, ...prev]);
       toast({
         title: 'Analysis Complete',

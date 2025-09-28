@@ -1,7 +1,7 @@
 export type AnalysisResult = {
   trustScore: number;
   predictedLabel: 'genuine' | 'fake';
-  explanation: string;
+  explanation?: string;
 };
 
 export type HistoryItem = AnalysisResult & {
@@ -10,4 +10,5 @@ export type HistoryItem = AnalysisResult & {
   productOrService: string;
   platform: string;
   reviewText: string;
+  userId?: number;
 };
