@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Camera, Eye, EyeOff } from "lucide-react"
+import { Camera, Eye, EyeOff, Loader2 } from "lucide-react"
 import React from "react"
 import { toast } from "@/hooks/use-toast"
 
@@ -29,6 +29,7 @@ const formSchema = z.object({
 export function SignupForm() {
   const router = useRouter()
   const [showPassword, setShowPassword] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,13 +40,35 @@ export function SignupForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    toast({
-      title: "Account Created",
-      description: "Redirecting to your dashboard...",
-    })
-    router.push('/dashboard')
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      toast({
+        title: "Account Created",
+        description: "You can now sign in.",
+      });
+      router.push('/login');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -111,7 +134,10 @@ export function SignupForm() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">Create Account</Button>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Create Account
+          </Button>
         </form>
       </Form>
       <p className="mt-8 text-center text-sm text-muted-foreground">
