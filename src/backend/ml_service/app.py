@@ -12,10 +12,10 @@ app = Flask(__name__)
 # Load models and vectorizer
 # In a production environment, load these once at startup
 try:
-    xgb_model = joblib.load('src/ml_service/xgboost_model.pkl')
-    vectorizer = joblib.load('src/ml_service/tfidf_vectorizer.pkl')
-    bert_tokenizer = BertTokenizer.from_pretrained('src/ml_service/bert_model')
-    bert_model = BertForSequenceClassification.from_pretrained('src/ml_service/bert_model')
+    xgb_model = joblib.load('src/backend/ml_service/xgboost_model.pkl')
+    vectorizer = joblib.load('src/backend/ml_service/tfidf_vectorizer.pkl')
+    bert_tokenizer = BertTokenizer.from_pretrained('src/backend/ml_service/bert_model')
+    bert_model = BertForSequenceClassification.from_pretrained('src/backend/ml_service/bert_model')
     bert_model.eval() # Set model to evaluation mode
 except FileNotFoundError:
     print("Models not found. Please run train.py first.")

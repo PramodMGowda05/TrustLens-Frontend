@@ -23,7 +23,7 @@ class ReviewDataset(torch.utils.data.Dataset):
 
 def train_xgboost():
     print("Training XGBoost model...")
-    df = pd.read_csv('src/ml_service/dataset.csv')
+    df = pd.read_csv('src/backend/ml_service/dataset.csv')
 
     # Label encode the target variable
     df['label_encoded'] = df['label'].apply(lambda x: 1 if x == 'genuine' else 0)
@@ -46,13 +46,13 @@ def train_xgboost():
     print(classification_report(y_test, preds))
 
     # Save the model and vectorizer
-    joblib.dump(model, 'src/ml_service/xgboost_model.pkl')
-    joblib.dump(vectorizer, 'src/ml_service/tfidf_vectorizer.pkl')
+    joblib.dump(model, 'src/backend/ml_service/xgboost_model.pkl')
+    joblib.dump(vectorizer, 'src/backend/ml_service/tfidf_vectorizer.pkl')
     print("XGBoost model and vectorizer saved.")
 
 def train_bert():
     print("\nTraining BERT model...")
-    df = pd.read_csv('src/ml_service/dataset.csv')
+    df = pd.read_csv('src/backend/ml_service/dataset.csv')
     
     # Pre-trained model
     model_name = 'bert-base-multilingual-cased'
@@ -95,8 +95,8 @@ def train_bert():
     trainer.train()
     
     # Save model
-    model.save_pretrained('src/ml_service/bert_model')
-    tokenizer.save_pretrained('src/ml_service/bert_model')
+    model.save_pretrained('src/backend/ml_service/bert_model')
+    tokenizer.save_pretrained('src/backend/ml_service/bert_model')
     print("BERT model and tokenizer saved.")
 
 if __name__ == '__main__':
