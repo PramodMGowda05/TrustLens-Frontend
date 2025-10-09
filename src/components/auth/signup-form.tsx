@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
+import *s z from "zod"
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Camera, Eye, EyeOff, Loader2 } from "lucide-react"
 import React from "react"
-import { toast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),

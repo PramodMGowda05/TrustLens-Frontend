@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Camera, Eye, EyeOff, Loader2 } from "lucide-react"
 import React from "react"
-import { toast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
