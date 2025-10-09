@@ -40,26 +40,33 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // In a real app, you'd make a request to your auth endpoint
-    // For now, we'll just simulate a successful login
-    if (values.email && values.password) {
-       toast({
-        title: "Login Successful",
-        description: "Redirecting to your dashboard...",
-      })
-      router.push('/dashboard');
-    } else {
-       toast({
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Login Successful",
+          description: "Redirecting to your dashboard...",
+        });
+        router.push('/dashboard');
+      } else {
+        throw new Error(data.message || 'An error occurred.');
+      }
+    } catch (error: any) {
+      toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid credentials provided.",
+        description: error.message,
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (
