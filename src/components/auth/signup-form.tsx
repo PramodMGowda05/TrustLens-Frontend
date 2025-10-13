@@ -28,6 +28,7 @@ const formSchema = z.object({
 
 export function SignupForm() {
   const router = useRouter()
+  const { toast } = useToast()
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
 

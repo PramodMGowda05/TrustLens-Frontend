@@ -27,6 +27,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter()
+  const { toast } = useToast()
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false);
 
