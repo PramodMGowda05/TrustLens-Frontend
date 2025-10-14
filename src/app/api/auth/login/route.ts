@@ -5,17 +5,27 @@ import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
 
 export async function POST(req: Request) {
+  const { email, password } = await req.json();
+
+  if (!email || !password) {
+    return NextResponse.json({ message: 'Email and password are required.' }, { status: 400 });
+  }
+  
+  if (!process.env.JWT_SECRET) {
+    console.error('JWT_SECRET is not set in the environment variables.');
+    return NextResponse.json({ message: 'Authentication configuration error.' }, { status: 500 });
+  }
+
+  let connection;
   try {
-    const { email, password } = await req.json();
+    connection = await pool.getConnection();
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    return NextResponse.json({ message: 'Could not connect to the database.' }, { status: 500 });
+  }
 
-    if (!email || !password) {
-      return NextResponse.json({ message: 'Email and password are required.' }, { status: 400 });
-    }
-
-    const connection = await pool.getConnection();
-
+  try {
     const [users] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
-    connection.release();
 
     if (!Array.isArray(users) || users.length === 0) {
       return NextResponse.json({ message: 'Invalid credentials.' }, { status: 401 });
@@ -48,7 +58,11 @@ export async function POST(req: Request) {
     return response;
 
   } catch (error) {
-    console.error('Login Error:', error);
-    return NextResponse.json({ message: 'An internal server error occurred.' }, { status: 500 });
+    console.error('Login processing error:', error);
+    return NextResponse.json({ message: 'An internal server error occurred during login.' }, { status: 500 });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 }
