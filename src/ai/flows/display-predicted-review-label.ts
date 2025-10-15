@@ -29,7 +29,7 @@ const prompt = ai.definePrompt({
   name: 'predictReviewLabelPrompt',
   input: {schema: PredictReviewLabelInputSchema},
   output: {schema: PredictReviewLabelOutputSchema},
-  prompt: `You are an AI that analyzes customer reviews and predicts whether they are genuine or fake.\n\nAnalyze the following review text and provide a trust score (0-1) and a predicted label (genuine or fake).\n\nReview Text: {{{reviewText}}}\n\nTrust Score: \nPredicted Label: `,
+  prompt: `You are an AI that analyzes customer reviews and predicts whether they are genuine or fake.\n\nAnalyze the following review text and provide a trust score (0-1) and a predicted label (genuine or fake).\n\nReview Text: {{{reviewText}}}\n\n`,
 });
 
 const predictReviewLabelFlow = ai.defineFlow(
