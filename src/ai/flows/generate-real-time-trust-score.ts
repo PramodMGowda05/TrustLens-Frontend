@@ -9,12 +9,14 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import pool from '@/backend/lib/db';
 
 const GenerateRealTimeTrustScoreInputSchema = z.object({
   reviewText: z.string().describe('The text content of the review.'),
   productOrService: z.string().describe('The product or service being reviewed.'),
   platform: z.string().describe('The platform where the review was submitted (e.g., Amazon, Yelp).'),
   language: z.string().describe('The language of the review.'),
+  userId: z.number().describe('The ID of the user submitting the review.'),
 });
 export type GenerateRealTimeTrustScoreInput = z.infer<typeof GenerateRealTimeTrustScoreInputSchema>;
 
@@ -87,16 +89,45 @@ const generateRealTimeTrustScoreFlow = ai.defineFlow(
     }
     
     // 2. Use a Genkit LLM to generate the explanation based on the model's output
-    const { output: explanation } = await explanationPrompt({
+    const { output: explanationText } = await explanationPrompt({
         reviewText: input.reviewText,
         modelOutput: modelOutput
     });
+    
+    const explanation = explanationText?.text ?? "Could not generate an explanation.";
 
-    // 3. Combine results and return
+    const resultToSave = {
+        userId: input.userId,
+        trustScore: modelOutput.trust_score,
+        predictedLabel: modelOutput.predicted_label,
+        explanation: explanation,
+        productOrService: input.productOrService,
+        platform: input.platform,
+        reviewText: input.reviewText,
+    };
+
+    // 3. Save the result to the database
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        const [dbResult] = await connection.query(
+            'INSERT INTO reviews (user_id, trust_score, predicted_label, explanation, product_or_service, platform, review_text) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [resultToSave.userId, resultToSave.trustScore, resultToSave.predictedLabel, resultToSave.explanation, resultToSave.productOrService, resultToSave.platform, resultToSave.reviewText]
+        );
+    } catch (dbError: any) {
+        console.error('Database error while saving review:', dbError);
+        throw new Error('Failed to save the analysis result.');
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+
+    // 4. Combine results and return
     return {
       trustScore: modelOutput.trust_score,
       predictedLabel: modelOutput.predicted_label,
-      explanation: explanation ? explanation.text : "Could not generate an explanation.",
+      explanation: explanation,
     };
   }
 );

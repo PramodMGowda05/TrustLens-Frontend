@@ -13,9 +13,10 @@ type HistoryPanelProps = {
   history: HistoryItem[];
   onSelect: (item: HistoryItem) => void;
   isAnalyzing: boolean;
+  isLoading: boolean;
 };
 
-export function HistoryPanel({ history, onSelect, isAnalyzing }: HistoryPanelProps) {
+export function HistoryPanel({ history, onSelect, isAnalyzing, isLoading }: HistoryPanelProps) {
   return (
     <Card>
       <CardHeader>
@@ -28,16 +29,21 @@ export function HistoryPanel({ history, onSelect, isAnalyzing }: HistoryPanelPro
       <CardContent>
         <ScrollArea className="h-[450px]">
           <div className="space-y-4 pr-4">
-            {isAnalyzing && (
-                <div className="flex items-center space-x-4 animate-pulse">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-[150px]" />
-                        <Skeleton className="h-4 w-[100px]" />
+            {(isAnalyzing || isLoading) && Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="flex items-center space-x-4 animate-pulse">
+                    <Skeleton className="h-12 w-12 rounded-lg" />
+                    <div className="space-y-2 flex-1">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
                     </div>
                 </div>
+            ))}
+            {!isLoading && !isAnalyzing && history.length === 0 && (
+                 <div className="text-center text-muted-foreground py-10">
+                    No analyses yet. Submit a review to get started.
+                </div>
             )}
-            {history.length > 0 ? history.map(item => (
+            {!isLoading && history.length > 0 && history.map(item => (
               <button
                 key={item.id}
                 onClick={() => onSelect(item)}
@@ -61,11 +67,7 @@ export function HistoryPanel({ history, onSelect, isAnalyzing }: HistoryPanelPro
                     </div>
                 </div>
               </button>
-            )) : (
-              <div className="text-center text-muted-foreground py-10">
-                No analyses yet. Submit a review to get started.
-              </div>
-            )}
+            ))}
           </div>
         </ScrollArea>
       </CardContent>

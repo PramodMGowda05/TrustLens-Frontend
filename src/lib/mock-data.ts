@@ -1,5 +1,6 @@
 import type { HistoryItem } from '@/lib/types';
 
+// This data is now for reference and will not be used in the dashboard.
 export const mockHistory: HistoryItem[] = [
   {
     id: '1',

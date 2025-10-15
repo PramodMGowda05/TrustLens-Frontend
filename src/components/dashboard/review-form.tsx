@@ -13,6 +13,9 @@ import { Wand2, Loader2 } from "lucide-react";
 import { generateRealTimeTrustScore } from "@/ai/flows/generate-real-time-trust-score";
 import { useToast } from "@/hooks/use-toast";
 import type { HistoryItem } from '@/lib/types';
+import { useEffect, useState } from "react";
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const formSchema = z.object({
     reviewText: z.string().min(20, "Review text must be at least 20 characters.").max(5000),
@@ -27,8 +30,26 @@ type ReviewFormProps = {
     setIsAnalyzing: (isAnalyzing: boolean) => void;
 };
 
+type UserToken = {
+    userId: number;
+};
+
 export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: ReviewFormProps) {
     const { toast } = useToast();
+    const [userId, setUserId] = useState<number | null>(null);
+
+    useEffect(() => {
+        const token = Cookies.get('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode<UserToken>(token);
+                setUserId(decoded.userId);
+            } catch (error) {
+                console.error("Failed to decode token:", error);
+            }
+        }
+    }, []);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -40,11 +61,20 @@ export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: 
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        if (!userId) {
+             toast({
+                variant: 'destructive',
+                title: 'Authentication Error',
+                description: 'Could not verify user. Please log in again.',
+            });
+            return;
+        }
+
         setIsAnalyzing(true);
         try {
-            const result = await generateRealTimeTrustScore(values);
+            const result = await generateRealTimeTrustScore({ ...values, userId });
             const newHistoryItem: HistoryItem = {
-              id: new Date().toISOString(),
+              id: new Date().toISOString(), // This is temporary, DB will generate real ID
               timestamp: new Date().toISOString(),
               ...values,
               ...result
@@ -53,10 +83,11 @@ export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: 
             form.reset();
         } catch (error) {
             console.error("Analysis failed:", error);
+            const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.';
             toast({
                 variant: 'destructive',
                 title: 'Analysis Failed',
-                description: 'An unexpected error occurred. Please try again.',
+                description: errorMessage,
             });
         } finally {
             setIsAnalyzing(false);
@@ -140,7 +171,7 @@ export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: 
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" disabled={isAnalyzing} className="w-full sm:w-auto">
+                        <Button type="submit" disabled={isAnalyzing || !userId} className="w-full sm:w-auto">
                             {isAnalyzing ? (
                                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing...</>
                             ) : (
