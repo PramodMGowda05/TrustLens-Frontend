@@ -58,7 +58,7 @@ export function SignupForm() {
     <div className="flex h-full flex-col justify-center">
       <div className="mb-8 text-center">
         <div className="mb-4 flex items-center justify-center gap-2 text-2xl font-bold font-headline text-primary md:hidden">
-            <Camera size={32} />
+            <Camera size_={32} />
             TrustLens
         </div>
         <h1 className="text-3xl font-bold font-headline">Create an Account</h1>
