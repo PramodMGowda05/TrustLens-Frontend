@@ -13,15 +13,12 @@ import { Wand2, Loader2 } from "lucide-react";
 import { generateRealTimeTrustScore } from "@/ai/flows/generate-real-time-trust-score";
 import { useToast } from "@/hooks/use-toast";
 import type { HistoryItem } from '@/lib/types';
-import { useEffect, useState } from "react";
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
+import { useState } from "react";
 
 const formSchema = z.object({
     reviewText: z.string().min(20, "Review text must be at least 20 characters.").max(5000),
     productOrService: z.string().min(2, "Product/Service is required.").max(50),
     platform: z.string().min(1, "Please select a platform."),
-    language: z.string().min(1, "Please select a language."),
 });
 
 type ReviewFormProps = {
@@ -30,51 +27,24 @@ type ReviewFormProps = {
     setIsAnalyzing: (isAnalyzing: boolean) => void;
 };
 
-type UserToken = {
-    userId: number;
-};
-
 export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: ReviewFormProps) {
     const { toast } = useToast();
-    const [userId, setUserId] = useState<number | null>(null);
-
-    useEffect(() => {
-        const token = Cookies.get('token');
-        if (token) {
-            try {
-                const decoded = jwtDecode<UserToken>(token);
-                setUserId(decoded.userId);
-            } catch (error) {
-                console.error("Failed to decode token:", error);
-            }
-        }
-    }, []);
-
+    
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             reviewText: "",
             productOrService: "",
             platform: "",
-            language: "en",
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        if (!userId) {
-             toast({
-                variant: 'destructive',
-                title: 'Authentication Error',
-                description: 'Could not verify user. Please log in again.',
-            });
-            return;
-        }
-
         setIsAnalyzing(true);
         try {
-            const result = await generateRealTimeTrustScore({ ...values, userId });
+            const result = await generateRealTimeTrustScore(values);
             const newHistoryItem: HistoryItem = {
-              id: new Date().toISOString(), // This is temporary, DB will generate real ID
+              id: new Date().toISOString(), 
               timestamp: new Date().toISOString(),
               ...values,
               ...result
@@ -139,7 +109,7 @@ export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: 
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Platform</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a platform" />
@@ -158,20 +128,7 @@ export function ReviewForm({ onAnalysisComplete, isAnalyzing, setIsAnalyzing }: 
                                 )}
                             />
                         </div>
-                        <FormField
-                            control={form.control}
-                            name="language"
-                            render={({ field }) => (
-                                <FormItem className="hidden">
-                                    <FormLabel>Language</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" disabled={isAnalyzing || !userId} className="w-full sm:w-auto">
+                        <Button type="submit" disabled={isAnalyzing} className="w-full sm:w-auto">
                             {isAnalyzing ? (
                                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing...</>
                             ) : (

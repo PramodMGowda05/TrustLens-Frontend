@@ -43,33 +43,15 @@ export function SignupForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
+    // Simulate signup
+    setTimeout(() => {
         toast({
           title: "Account Created",
           description: "You can now sign in.",
         });
         router.push('/login');
-      } else {
-        throw new Error(data.message || 'An error occurred.');
-      }
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Signup Failed",
-        description: error.message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+        setIsLoading(false)
+    }, 1000)
   }
 
   return (

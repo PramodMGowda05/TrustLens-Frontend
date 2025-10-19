@@ -41,33 +41,23 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast({
-          title: "Login Successful",
-          description: "Redirecting to your dashboard...",
-        });
-        router.push('/dashboard');
-      } else {
-        throw new Error(data.message || 'An error occurred.');
-      }
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: error.message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    // Simulate login
+    setTimeout(() => {
+        if (values.email === 'admin@trustlens.com' && values.password === 'password') {
+            toast({
+                title: "Login Successful",
+                description: "Redirecting to your dashboard...",
+            });
+            router.push('/dashboard');
+        } else {
+             toast({
+                variant: "destructive",
+                title: "Login Failed",
+                description: "Demo accepts: admin@trustlens.com / password",
+            });
+        }
+        setIsLoading(false);
+    }, 1000);
   }
 
   return (
@@ -89,7 +79,7 @@ export function LoginForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@example.com" {...field} />
+                  <Input placeholder="admin@trustlens.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -103,7 +93,7 @@ export function LoginForm() {
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} />
+                    <Input type={showPassword ? "text" : "password"} placeholder="password" {...field} />
                     <Button 
                         type="button"
                         variant="ghost" 

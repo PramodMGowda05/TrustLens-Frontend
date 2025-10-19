@@ -7,45 +7,21 @@ import { HistoryPanel } from '@/components/dashboard/history-panel';
 import type { HistoryItem } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 export default function DashboardPage() {
   const [analysisResult, setAnalysisResult] = useState<HistoryItem | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false); // No longer loading from a DB
   const { toast } = useToast();
 
-  const fetchHistory = async () => {
-    setIsLoadingHistory(true);
-    try {
-      const response = await fetch('/api/reviews/history');
-      if (!response.ok) {
-        throw new Error('Failed to fetch history');
-      }
-      const data = await response.json();
-      setHistory(data);
-    } catch (error) {
-      console.error(error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Could not load your analysis history.',
-      });
-    } finally {
-      setIsLoadingHistory(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchHistory();
-  }, []);
 
   const handleAnalysisComplete = (result: HistoryItem) => {
     if (result) {
       setAnalysisResult(result);
-      // Prepend the new result to the history and fetch the updated list
-      setHistory(prev => [result, ...prev]);
-      fetchHistory(); // Re-fetch to get the new item with database ID and timestamp
+      // Prepend the new result to the history
+      setHistory(prev => [result, ...prev].slice(0, 10)); // Keep last 10
       toast({
         title: 'Analysis Complete',
         description: `Review classified as ${result.predictedLabel}.`,
@@ -61,18 +37,13 @@ export default function DashboardPage() {
           isAnalyzing={isAnalyzing}
           setIsAnalyzing={setIsAnalyzing}
         />
-        {analysisResult ? (
-          <div className="mt-6">
-            <ResultDisplay result={analysisResult} />
-          </div>
-        ) : (
-          !isAnalyzing && isLoadingHistory && (
-             <Card className="mt-6">
+        {isAnalyzing ? (
+            <Card className="mt-6">
               <CardHeader>
                 <Skeleton className="h-8 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 pt-6">
                 <div className="flex items-center space-x-4">
                     <Skeleton className="h-32 w-32 rounded-full" />
                     <div className="space-y-2 w-full">
@@ -83,7 +54,10 @@ export default function DashboardPage() {
                 </div>
               </CardContent>
             </Card>
-          )
+        ) : analysisResult && (
+          <div className="mt-6">
+            <ResultDisplay result={analysisResult} />
+          </div>
         )}
       </div>
       <div className="md:col-span-1">

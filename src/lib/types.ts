@@ -5,8 +5,8 @@ export type AnalysisResult = {
 };
 
 export type HistoryItem = AnalysisResult & {
-  id: string; // This will be the database ID
-  timestamp: string; // This will be the database timestamp
+  id: string; 
+  timestamp: string;
   productOrService: string;
   platform: string;
   reviewText: string;
